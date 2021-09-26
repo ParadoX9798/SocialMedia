@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}
+    Home
+{% endblock title %}
+{% block content %}
+    {% for post in posts %}
+        <div class="card">
+            <p class="card-header">{{ post.user}}</p>
+            <a class="card-header" href="{{ post.get_absolute_url }}">{{ post.body | truncatewords:30 }}</a>
+        </div>
+    {% endfor %}
+{% endblock content %}

@@ -13,7 +13,9 @@
 <body>
     {% include 'inc/navbar.html' %}
     <div class="jumbotron">
+        {% block content %}
         {% include 'inc/messages.html' %}
+        {% endblock content %}
     </div>
 
 

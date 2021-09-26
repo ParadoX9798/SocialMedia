@@ -3,5 +3,21 @@
     {{ user.username }} Profile
 {% endblock title%}
 {% block content %}
-    <h4>{{ user.username }}</h4>
+    <div class="text-center">
+        <h4 >{{ user.username }}</h4>
+        <p>{{ user.profile.bio }}</p>
+    </div>
+    <div class="mt-5">
+    {% for post in posts %}
+        <div class="card">
+            <a class="card-body" href="{{ post.get_absolute_url }}">{{ post.body }}</a>
+
+        </div>
+    {% empty %}
+            <p class="card-body">This User Has no Posts!</p>
+
+    {% endfor %}
+    </div>
+
+
 {% endblock content %}

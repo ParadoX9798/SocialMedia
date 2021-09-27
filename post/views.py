@@ -3,6 +3,7 @@ from .models import Post
 from .forms import PostForm
 from django.contrib import messages
 from django.utils.text import slugify
+from django.contrib.auth.decorators import login_required
 
 
 def all_posts(request):
@@ -15,17 +16,21 @@ def post_detail(request, year, month, day, slug):
     return render(request, 'post/post_detail.html', {"post": post})
 
 
+@login_required
 def add_post(request, id):
-    if request.method == "POST":
-        form = PostForm(request.POST)
-        if form.is_valid():
-            new_post = form.save(commit=False)
-            new_post.user = request.user
-            new_post.slug = slugify(form.cleaned_data["body"][:30])
-            new_post.save()
-            messages.success(request, "Your Post Submitted", "success")
-            return redirect("accounts:user_dashboard", id)
+    if request.user.id == id:
+        if request.method == "POST":
+            form = PostForm(request.POST)
+            if form.is_valid():
+                new_post = form.save(commit=False)
+                new_post.user = request.user
+                new_post.slug = slugify(form.cleaned_data["body"][:30])
+                new_post.save()
+                messages.success(request, "Your Post Submitted", "success")
+                return redirect("accounts:user_dashboard", id)
 
+        else:
+            form = PostForm()
+        return render(request, 'post/add_post.html', {"form": form})
     else:
-        form = PostForm()
-    return render(request, 'post/add_post.html', {"form": form})
+        return redirect("post:all_posts")

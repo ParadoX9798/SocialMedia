@@ -3,10 +3,22 @@
     Home
 {% endblock title %}
 {% block content %}
+    <div class="flex d-flex align-content-center flex-wrap flex-column-reverse align-items-stretch">
     {% for post in posts %}
         <div class="card">
-            <p class="card-header"><a href="{% url "accounts:user_dashboard" post.user.id %}">{{ post.user}}</a> </p>
-            <a class="card-header" href="{{ post.get_absolute_url }}">{{ post.body | truncatewords:30 }}</a>
+            <a
+                    href="{% url "accounts:user_dashboard" post.user.id %}"
+                    class="card-header text-center h2 text-primary">{{ post.user}}
+            </a>
+            <span class="card-body p-5 text-secondary text-center lead">
+                {{ post.body | truncatewords:15 }}
+            </span>
+                            <small class="text-right mb-2 text-secondary">{{ post.created }}</small>
+                <a class="btn btn-primary" href="{{ post.get_absolute_url }}">read more</a>
+
+
         </div>
+                <br>
     {% endfor %}
+    </div>
 {% endblock content %}

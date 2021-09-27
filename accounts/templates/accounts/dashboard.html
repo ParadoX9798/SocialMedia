@@ -3,7 +3,9 @@
     {{ user.username }} Profile
 {% endblock title%}
 {% block content %}
+    {% if self_dash%}
     <a href="{% url "post:add_post" request.user.id %}">+Post</a>
+    {% endif %}
     <div class="text-center">
         <h4 >{{ user.username }}</h4>
         <p>{{ user.profile.bio }}</p>

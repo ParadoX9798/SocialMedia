@@ -4,9 +4,12 @@ from django.contrib import messages
 from .forms import UserLoginForm, UserRegistrationForm
 from django.contrib.auth.models import User
 from post.models import Post
+from django.contrib.auth.decorators import login_required
 
 
 def user_login(request):
+    next = request.GET.get("next")
+    print(next)
     if request.method == "POST":
         form = UserLoginForm(request.POST)
         if form.is_valid():
@@ -16,6 +19,8 @@ def user_login(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, "Successfully Logged in", "success")
+                if next:
+                    return redirect(next)
                 return redirect("post:all_posts")
             else:
                 messages.warning(request, "Wrong Username or Password", "warning")
@@ -41,14 +46,19 @@ def user_register(request):
     return render(request, "accounts/register.html", {'form': form})
 
 
+@login_required
 def user_logout(request):
     logout(request)
     messages.success(request, "Successfully Logged out", "success")
     return redirect("accounts:user_login")
 
 
+@login_required
 def user_dashboard(request, id):
     user = get_object_or_404(User, id=id)
     posts = Post.objects.filter(user=user)
-    return render(request, 'accounts/dashboard.html', {'user': user, 'posts': posts})
+    self_dash = False
+    if request.user.id == user.id:
+        self_dash = True
+    return render(request, 'accounts/dashboard.html', {'user': user, 'posts': posts, 'self_dash': self_dash})
 

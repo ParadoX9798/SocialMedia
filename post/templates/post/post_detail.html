@@ -24,7 +24,7 @@
     <p>This post has {{ tottal }} comments</p>
     {% endwith %}
     {% for comment in comments%}
-        <div class="card text-white bg-dark ml-2" >
+        <div class="card text-white bg-dark" >
         <p class="card-header">{{ comment.user }}</p>
         <p class="card-body">{{ comment.body }}</p>
         </div>

@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post
+from .models import Post , Comment
 from .forms import PostForm, EditPostForm
 from django.contrib import messages
 from django.utils.text import slugify
@@ -14,7 +14,8 @@ def all_posts(request):
 
 def post_detail(request, year, month, day, slug):
     post = get_object_or_404(Post, created__year=year, created__month=month, created__day=day, slug=slug)
-    return render(request, 'post/post_detail.html', {"post": post})
+    comments = Comment.objects.filter(post=post, is_reply=False)
+    return render(request, 'post/post_detail.html', {"post": post, "comments": comments})
 
 
 @login_required
@@ -52,8 +53,9 @@ def delete_post(request, user_id, post_id):
 @login_required
 def edit_post(request, user_id, post_id):
     if user_id == request.user.id:
+        post = get_object_or_404(Post, pk=post_id)
         if request.method == "POST":
-            form = PostForm(request.POST)
+            form = PostForm(request.POST, instance=post)
             if form.is_valid():
                 edited_post = form.save(commit=False)
                 edited_post.user = request.user
@@ -63,7 +65,6 @@ def edit_post(request, user_id, post_id):
                 return redirect("accounts:user_dashboard", user_id)
 
         else:
-            post = get_object_or_404(Post, id=post_id)
             form = EditPostForm(instance=post)
         return render(request, 'post/edit_post.html', {'form': form})
 

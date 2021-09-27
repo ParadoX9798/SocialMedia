@@ -23,14 +23,27 @@
         {% with tottal=comments.count %}
     <p>This post has {{ tottal }} comments</p>
     {% endwith %}
+    {% if request.user.is_authenticated %}
+        <form method="post" action="" novalidate class="mt-5 mb-5 col-md-6" >
+            {% csrf_token %}
+            {{ form.as_p }}
+        <input type="submit" value="Send" class="btn btn-primary">
+        </form>
+
+    {% else %}
+    <p>Only logged in users can send comment</p>
+    {% endif %}
     {% for comment in comments%}
         <div class="card text-white bg-dark" >
         <p class="card-header">{{ comment.user }}</p>
         <p class="card-body">{{ comment.body }}</p>
+        <small class="card-footer ml-auto">{{ comment.created }}</small>
         </div>
         <br>
         {% empty %}
         <p>There is no comments</p>
 
+
     {% endfor %}
+
 {% endblock content %}

@@ -3,14 +3,19 @@
     @{{ post.user }}
 {% endblock title %}
 {% block content %}
-    {% if request.user.is_authenticated and request.user.id == post.user.id%}
-        <a href="{% url "post:delete_post" post.user.id post.id %}">Delete Post</a>
-    {% endif %}
+
     <p>{{  post.user}}</p>
 
     <small>{{ post.created }} </small>
             <hr>
 
-    {{ post.body }}
+    <p>
+        {{ post.body }}
+    </p>
+    {% if request.user.is_authenticated and request.user.id == post.user.id%}
+            <a href="{% url "post:delete_post" post.user.id post.id %}">Delete</a>
+        <br>
+            <a href="{% url "post:edit_post" post.user.id post.id %}">Edit</a>
 
+    {% endif %}
 {% endblock content %}

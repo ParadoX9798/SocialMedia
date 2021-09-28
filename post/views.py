@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Comment
-from .forms import PostForm, EditPostForm, AddCommentForm
+from .forms import PostForm, EditPostForm, AddCommentForm, AddReplyForm
 from django.contrib import messages
 from django.utils.text import slugify
 from django.contrib.auth.decorators import login_required
@@ -15,6 +15,7 @@ def all_posts(request):
 def post_detail(request, year, month, day, slug):
     post = get_object_or_404(Post, created__year=year, created__month=month, created__day=day, slug=slug)
     comments = Comment.objects.filter(post=post, is_reply=False)
+    reply = AddReplyForm()
     if request.method == "POST":
         form = AddCommentForm(request.POST)
         if form.is_valid():
@@ -22,11 +23,11 @@ def post_detail(request, year, month, day, slug):
             new_comment.user = request.user
             new_comment.post = post
             new_comment.save()
-            messages.success(request, "Your comments submitted successfully!", 'success')
+            messages.success(request, "Your comment submitted successfully!", 'success')
             return redirect("post:post_detail", year, month, day, slug)
     else:
         form = AddCommentForm()
-    return render(request, 'post/post_detail.html', {"post": post, "comments": comments,"form":form})
+    return render(request, 'post/post_detail.html', {"post": post, "comments": comments, "form": form, "reply": reply})
 
 
 @login_required
@@ -81,3 +82,21 @@ def edit_post(request, user_id, post_id):
 
     else:
         return redirect("post:all_posts")
+
+
+@login_required
+def add_reply(request, post_id, comment_id):
+    post = get_object_or_404(Post, id=post_id)
+    comment = get_object_or_404(Comment, pk=comment_id)
+    if request.method == "POST":
+        form = AddReplyForm(request.POST)
+        if form.is_valid():
+            new_reply = form.save(commit=False)
+            new_reply.user = request.user
+            new_reply.post = post
+            new_reply.reply = comment
+            new_reply.is_reply = True
+            new_reply.save()
+            messages.success(request, "Your reply submitted successfully!", 'success')
+            return redirect("post:post_detail", post.created.year, post.created.month, post.created.day, post.slug)
+

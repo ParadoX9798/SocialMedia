@@ -28,4 +28,4 @@ class Comment(models.Model):
         return f'{self.user} - {self.body[:30]}'
 
     class Meta:
-        ordering = ("-created",)
+        ordering = ("created",)

@@ -4,7 +4,11 @@
 {% endblock title%}
 {% block content %}
     {% if self_dash%}
-    <a href="{% url "post:add_post" request.user.id %}">+Post</a>
+        <nav class="navbar">
+            <a href="{% url "post:add_post" request.user.id %}" class="nav-item">+Post</a>
+            <a href="{% url "accounts:edit_profile" request.user.id %}" class="nav-item ml-auto">Edit Profile</a>
+        </nav>
+
     {% endif %}
     <div class="text-center">
         <h4 >{{ user.username }}</h4>

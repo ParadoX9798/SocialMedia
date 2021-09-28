@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django import forms
+from .models import Profile
 
 
 class UserLoginForm(forms.Form):
@@ -39,6 +40,18 @@ class UserRegistrationForm(forms.Form):
         if user.exists():
             raise forms.ValidationError("Username Already in use")
 
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('bio', 'age')
+        widgets = {
+            'bio': forms.Textarea(attrs={'class': 'form-control'}),
+            'age': forms.NumberInput(attrs={'class': 'form-cotnrol'}),
+        }
+    email = forms.EmailField(widget=forms.EmailInput(attrs={"class": "form-control"}))
+    first_name = forms.CharField(max_length=50, widget=forms.TextInput(attrs={"class": "form-control"}))
+    last_name = forms.CharField(max_length=50, widget=forms.TextInput(attrs={"class": "form-control"}))
 
 
 

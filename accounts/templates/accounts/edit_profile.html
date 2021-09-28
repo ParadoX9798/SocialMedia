@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}
+    Edit Profile
+{% endblock title %}
+
+{% block content %}
+    <form action="" method="post" novalidate>
+    {% csrf_token %}
+        <div class="form-group">
+            <p>First Name: {{ form.first_name }}</p>
+            <p>Last Name: {{ form.last_name }}</p>
+            <p>Email: {{ form.email }}</p>
+            <p>Bio: {{ form.bio }}</p>
+            <p>Age: {{ form.age }}</p>
+        </div>
+
+
+
+
+
+    <input class="btn btn-primary" type="submit" value="Submit">
+</form>
+
+{% endblock content %}

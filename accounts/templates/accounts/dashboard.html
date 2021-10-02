@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}
     {{ user.username }} Profile
 {% endblock title%}
+{% block js_files %}
+    <script src="{% static "accounts/js/script.js" %}"></script>
+{% endblock js_files %}
 {% block content %}
     {% if self_dash%}
         <nav class="navbar">

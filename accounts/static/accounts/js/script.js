@@ -33,16 +33,16 @@ $('#following_btn').click(function () {
 
 
     var user_id = $('#following_btn').attr('data-id')
-    let follow = document.getElementById("following_btn").textContent;
+    var follow = document.getElementById("following_btn").textContent.trim()
 
     if (follow === "follow") {
         var url = "/accounts/follow/";
         var btn_text = 'unfollow';
-        var btn_class = 'btn btn-warning text-center mx-auto';
+        var btn_class = 'btn btn-warning position-absolute';
     } else {
         var url = '/accounts/unfollow/';
         var btn_text = 'follow';
-        var btn_class = 'btn btn-primary text-center mx-auto';
+        var btn_class = 'btn btn-primary position-absolute';
     }
 
 

@@ -18,12 +18,12 @@
 
         <div class="card-header position-relative">
             {% if request.user.id != user.id and not is_following %}
-                <button id="following_btn" data-id="{{ user.id }}" style="display:block"
-                        class="btn btn-primary text-center mx-auto">follow
+                <button id="following_btn" data-id="{{ user.id }}" style="right: 0"
+                        class="btn btn-primary position-absolute">follow
                 </button>
-            {% elif request.user.id != user.id and is_following %}
-                <button id="following_btn" data-id="{{ user.id }}" style="display:block"
-                        class="btn btn-warning text-center mx-auto">unfollow
+            {% elif request.user.id != user.id and is_following == True %}
+                <button id="following_btn" data-id="{{ user.id }}" style="right: 0"
+                        class="btn btn-warning position-absolute">unfollow
                 </button>
             {% endif %}
 

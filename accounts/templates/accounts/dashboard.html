@@ -4,8 +4,8 @@
     {{ user.username }} Profile
 {% endblock title %}
 {% block js_files %}
-    <script src="{% static "accounts/js/script.js" %}"></script>
-{% endblock js_files %}
+<script src="{% static 'accounts/js/script.js' %}"></script>
+{% endblock %}
 {% block content %}
     {% if self_dash %}
         <nav class="navbar">
@@ -17,15 +17,14 @@
     <div class="card text-center col-md-8 m-auto bg-dark text-light">
 
         <div class="card-header position-relative">
-            {% if request.user != user and not is_following %}
-                <button id="following-btn" data-id="{{ user.id }}" class="btn btn-primary position-absolute"
-                        style="right: 0">Follow
+            {% if request.user.id != user.id and not is_following %}
+                <button id="following_btn" data-id="{{ user.id }}" style="display:block"
+                        class="btn btn-primary text-center mx-auto">follow
                 </button>
-            {% elif request.user != user and is_following %}
-                <button id="following-btn" data-id="{{ user.id }}" class="btn btn-danger position-absolute"
-                        style="right: 0">Unfollow
+            {% elif request.user.id != user.id and is_following %}
+                <button id="following_btn" data-id="{{ user.id }}" style="display:block"
+                        class="btn btn-warning text-center mx-auto">unfollow
                 </button>
-
             {% endif %}
 
             <p class="display-4">@{{ user.username }}</p>

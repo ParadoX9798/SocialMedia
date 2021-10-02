@@ -9,6 +9,7 @@ urlpatterns = [
     path("add_post/<int:id>/", views.add_post, name="add_post"),
     path("delete_post/<int:user_id>/<int:post_id>/", views.delete_post, name="delete_post"),
     path("edit_post/<int:user_id>/<int:post_id>/", views.edit_post, name="edit_post"),
-    path("add_reply/<int:post_id>/<int:comment_id>/", views.add_reply, name="add_reply")
+    path("add_reply/<int:post_id>/<int:comment_id>/", views.add_reply, name="add_reply"),
+    path("like/<int:post_id>/", views.like, name="like"),
 
 ]

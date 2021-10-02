@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post, Comment
+from .models import Post, Comment, Like
 from .forms import PostForm, EditPostForm, AddCommentForm, AddReplyForm
 from django.contrib import messages
 from django.utils.text import slugify
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 
 
 def all_posts(request):
@@ -16,6 +17,10 @@ def post_detail(request, year, month, day, slug):
     post = get_object_or_404(Post, created__year=year, created__month=month, created__day=day, slug=slug)
     comments = Comment.objects.filter(post=post, is_reply=False)
     reply = AddReplyForm()
+    can_like = False
+    if request.user.is_authenticated:
+        if post.user_can_like(request.user):
+            can_like = True
     if request.method == "POST":
         form = AddCommentForm(request.POST)
         if form.is_valid():
@@ -27,7 +32,8 @@ def post_detail(request, year, month, day, slug):
             return redirect("post:post_detail", year, month, day, slug)
     else:
         form = AddCommentForm()
-    return render(request, 'post/post_detail.html', {"post": post, "comments": comments, "form": form, "reply": reply})
+    return render(request, 'post/post_detail.html',
+                  {"post": post, "comments": comments, "form": form, "reply": reply, "can_like": can_like})
 
 
 @login_required
@@ -99,4 +105,13 @@ def add_reply(request, post_id, comment_id):
             new_reply.save()
             messages.success(request, "Your reply submitted successfully!", 'success')
             return redirect("post:post_detail", post.created.year, post.created.month, post.created.day, post.slug)
+
+
+@login_required
+def like(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    like = Like(user_like=request.user, post_list=post)
+    like.save()
+    messages.success(request, "Liked!", 'success')
+    return redirect("post:post_detail", post.created.year, post.created.month, post.created.day, post.slug)
 

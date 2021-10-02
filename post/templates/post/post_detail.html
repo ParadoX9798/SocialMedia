@@ -3,61 +3,65 @@
     @{{ post.user }}
 {% endblock title %}
 {% block content %}
-        {% if request.user.is_authenticated and request.user.id == post.user.id%}
-            <a href="{% url "post:delete_post" post.user.id post.id %}">Delete</a>
+    {% if request.user.is_authenticated and request.user.id == post.user.id %}
+        <a href="{% url "post:delete_post" post.user.id post.id %}">Delete</a>
         <br>
-            <a href="{% url "post:edit_post" post.user.id post.id %}">Edit</a>
+        <a href="{% url "post:edit_post" post.user.id post.id %}">Edit</a>
 
     {% endif %}
 
-    <p>{{  post.user}}</p>
+    <p>{{ post.user }}</p>
 
     <small>{{ post.created }} </small>
-            <hr>
+    <hr>
 
     <p>
         {{ post.body }}
     </p>
 
     <hr>
-        {% with tottal=comments.count %}
-    <p>This post has {{ tottal }} comments</p>
+    {% with tottal=comments.count %}
+        <p>This post has {{ tottal }} comments</p>
     {% endwith %}
     {% if request.user.is_authenticated %}
-        <form method="post" action="" novalidate class="mt-5 mb-5 col-md-10" >
+    <a href="{% url "post:like" post.id %}" class="btn btn-primary {% if can_like %} disabled {% endif %}col-md-2">Like {{ post.count_like }}</a>
+    {% endif %}
+
+    {% if request.user.is_authenticated %}
+        <form method="post" action="" novalidate class="mt-5 mb-5 col-md-10">
             {% csrf_token %}
             {{ form.as_p }}
-        <input type="submit" value="Send" class="btn btn-primary">
+            <input type="submit" value="Send" class="btn btn-primary">
         </form>
 
     {% else %}
-    <p>Only logged in users can send comment</p>
+        <p>Only logged in users can send comment</p>
     {% endif %}
-    {% for comment in comments%}
-        <div class="card text-white bg-dark" >
-        <p class="card-header">{{ comment.user }}</p>
-        <p class="card-body">{{ comment.body }}</p>
-        <small class="card-footer ml-auto">{{ comment.created }}</small>
-        <div class="card-body col-md-10 ml-1">
-            <form method="post" action="{% url "post:add_reply" post.id comment.id %}">
-                {% csrf_token %}
-                {{ reply.as_p }}
-                <input type="submit" value="Send">
-            </form>
-
-        </div>
-        {% for reply in comment.rcomment.all %}
-            <div class="card bg-primary ml-5 mb-5 col-md-8">
-                <p class="card-header">{{ reply.user }}</p>
-                <p class="card-body">{{ reply.body }}</p>
-                <small class="card-footer ml-auto">{{ reply.created }}</small>
+    {% for comment in comments %}
+        <div class="card text-white bg-dark">
+            <p class="card-header">{{ comment.user }}</p>
+            <p class="card-body">{{ comment.body }}</p>
+            <small class="card-footer ml-auto">{{ comment.created }}</small>
+            <div class="card-body col-md-10 ml-1">
+                <form method="post" action="{% url "post:add_reply" post.id comment.id %}">
+                    {% csrf_token %}
+                    {{ reply.as_p }}
+                    <input type="submit" value="Send">
+                </form>
 
             </div>
+            {% for reply in comment.rcomment.all %}
+                <div class="card bg-primary ml-5 mb-5 col-md-8">
+                    <p class="card-header">{{ reply.user }}</p>
+                    <p class="card-body">{{ reply.body }}</p>
+                    <small class="card-footer ml-auto">{{ reply.created }}</small>
+
+                </div>
 
             {% endfor %}
         </div>
         <br>
-        {% empty %}
+    {% empty %}
         <p>There is no comments</p>
 
 

@@ -1,1 +1,3 @@
-alert("hi");
+$("#following_btn").click(function ()){
+
+}

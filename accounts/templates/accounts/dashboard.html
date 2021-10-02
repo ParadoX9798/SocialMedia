@@ -2,12 +2,12 @@
 {% load static %}
 {% block title %}
     {{ user.username }} Profile
-{% endblock title%}
+{% endblock title %}
 {% block js_files %}
     <script src="{% static "accounts/js/script.js" %}"></script>
 {% endblock js_files %}
 {% block content %}
-    {% if self_dash%}
+    {% if self_dash %}
         <nav class="navbar">
             <a href="{% url "post:add_post" request.user.id %}" class="nav-item">+Post</a>
             <a href="{% url "accounts:edit_profile" request.user.id %}" class="nav-item ml-auto">Edit Profile</a>
@@ -16,24 +16,37 @@
     {% endif %}
     <div class="card text-center col-md-8 m-auto bg-dark text-light">
 
-        <div class="card-header">
+        <div class="card-header position-relative">
+            {% if request.user != user and not is_following %}
+                <button id="following-btn" data-id="{{ user.id }}" class="btn btn-primary position-absolute"
+                        style="right: 0">Follow
+                </button>
+            {% elif request.user != user and is_following %}
+                <button id="following-btn" data-id="{{ user.id }}" class="btn btn-danger position-absolute"
+                        style="right: 0">Unfollow
+                </button>
+
+            {% endif %}
+
             <p class="display-4">@{{ user.username }}</p>
             <small>{{ user.first_name }} {{ user.last_name }}
             </small>
         </div>
 
         <p class="card-body lead">{{ user.profile.bio }}</p>
-    </div>
-    <div class="flex d-flex mt-5 flex-wrap">
-    {% for post in posts %}
-        <div class="card col-md-4">
-            <a class="card-body" href="{{ post.get_absolute_url }}">{{ post.body}}</a>
 
-        </div>
-    {% empty %}
+    </div>
+
+    <div class="flex d-flex mt-5 flex-wrap">
+        {% for post in posts %}
+            <div class="card col-md-4">
+                <a class="card-body" href="{{ post.get_absolute_url }}">{{ post.body }}</a>
+
+            </div>
+        {% empty %}
             <p class="card-body">This User Has no Posts!</p>
 
-    {% endfor %}
+        {% endfor %}
     </div>
 
 

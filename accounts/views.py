@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import UserLoginForm, UserRegistrationForm, ProfileForm, EmailLoginForm , VerifyCodeForm
+from .forms import UserLoginForm, UserRegistrationForm, ProfileForm, EmailLoginForm, VerifyCodeForm
 from django.contrib.auth.models import User
 from post.models import Post
 from django.contrib.auth.decorators import login_required
 from random import randint
 from kavenegar import *
-
+from .models import Relations
 
 
 def user_login(request):
@@ -60,10 +60,15 @@ def user_logout(request):
 def user_dashboard(request, id):
     user = get_object_or_404(User, id=id)
     posts = Post.objects.filter(user=user)
+    is_following = False
     self_dash = False
+    relation = Relations.objects.filter(from_user=request.user, to_user=user)
+    if relation.exists():
+        is_following = True
     if request.user.id == user.id:
         self_dash = True
-    return render(request, 'accounts/dashboard.html', {'user': user, 'posts': posts, 'self_dash': self_dash})
+    return render(request, 'accounts/dashboard.html', {'user': user, 'posts': posts,
+                                                       'self_dash': self_dash, 'is_following': is_following})
 
 
 @login_required
@@ -120,3 +125,11 @@ def verify(request, user_email, rand_num):
     else:
         form = VerifyCodeForm()
     return render(request, 'accounts/verify.html', {"form": form})
+
+
+def follow(request):
+    pass
+
+
+def unfollow(request):
+    pass

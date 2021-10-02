@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import UserLoginForm, UserRegistrationForm, ProfileForm
+from .forms import UserLoginForm, UserRegistrationForm, ProfileForm, EmailLoginForm , VerifyCodeForm
 from django.contrib.auth.models import User
 from post.models import Post
 from django.contrib.auth.decorators import login_required
-from .models import Profile
+from random import randint
+from kavenegar import *
+
 
 
 def user_login(request):
@@ -86,3 +88,35 @@ def edit_profile(request, user_id):
         else:
             form = ProfileForm(instance=user.profile, initial=initial)
         return render(request, "accounts/edit_profile.html", {"form": form})
+
+
+def email_login(request):
+    if request.method == "POST":
+        form = EmailLoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            rand_num = randint(1000, 9999)
+            api = KavenegarAPI(
+                '747047636F634A774D683877706968445A38664D64415166796779394546507272424B4C76534A456248513D')
+            params = {'sender': '', 'receptor': '09353098300', 'message': rand_num}
+            api.sms_send(params)
+            return redirect("accounts:verify", email, rand_num)
+    else:
+        form = EmailLoginForm()
+    return render(request, 'accounts/email_login.html', {"form": form})
+
+
+def verify(request, user_email, rand_num):
+    if request.method == "POST":
+        form = VerifyCodeForm(request.POST)
+        if form.is_valid():
+            user = get_object_or_404(User, email=user_email)
+            if rand_num == form.cleaned_data['code']:
+                login(request, user)
+                messages.success(request, "successfully logged in", 'success')
+                return redirect("post:all_posts")
+            else:
+                messages.warning(request, "code is wrong!", 'warning')
+    else:
+        form = VerifyCodeForm()
+    return render(request, 'accounts/verify.html', {"form": form})

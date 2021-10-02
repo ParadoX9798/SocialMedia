@@ -54,4 +54,15 @@ class ProfileForm(forms.ModelForm):
     last_name = forms.CharField(max_length=50, widget=forms.TextInput(attrs={"class": "form-control"}))
 
 
+class EmailLoginForm(forms.Form):
+    email = forms.EmailField()
 
+    def clean_email(self):
+        email = User.objects.filter(email=self.cleaned_data['email'])
+        if not email.exists():
+            raise forms.ValidationError("this email does not exist!")
+        return self.cleaned_data['email']
+
+
+class VerifyCodeForm(forms.Form):
+    code = forms.IntegerField()

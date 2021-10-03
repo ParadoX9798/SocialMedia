@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import UserLoginForm, UserRegistrationForm, ProfileForm, EmailLoginForm, VerifyCodeForm
+from .forms import UserLoginForm, UserRegistrationForm, ProfileForm, EmailLoginForm, VerifyCodeForm, ChangePasswordForm
 from django.contrib.auth.models import User
 from post.models import Post
 from django.contrib.auth.decorators import login_required
@@ -152,3 +152,20 @@ def unfollow(request):
             return JsonResponse({'status': 'ok'})
         else:
             return JsonResponse({'status': 'notexists'})
+
+
+@login_required
+def change_password(request, user_id):
+    if request.method == "POST":
+
+        form = ChangePasswordForm(request.POST)
+        if form.is_valid():
+            user = get_object_or_404(User, id=user_id)
+            user.set_password(form.cleaned_data['password1'])
+            user.save()
+            messages.success(request, "password changed successfully!", "success")
+            return redirect("accounts:user_login")
+    else:
+        form = ChangePasswordForm()
+
+    return render(request, "accounts/change_password.html", {"form": form})

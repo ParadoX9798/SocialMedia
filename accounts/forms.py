@@ -13,16 +13,16 @@ class UserLoginForm(forms.Form):
 class UserRegistrationForm(forms.Form):
     username = forms.CharField(max_length=50,
                                widget=forms.TextInput(attrs={"class": "form-control",
-                                                                            'placeholder': "Your Username"}))
+                                                             'placeholder': "Your Username"}))
     email = forms.EmailField(max_length=50,
                              widget=forms.EmailInput(attrs={"class": "form-control",
-                                                                            'placeholder': "Your Email"}))
+                                                            'placeholder': "Your Email"}))
     password1 = forms.CharField(label="Password", max_length=50,
                                 widget=forms.PasswordInput(attrs={"class": "form-control",
-                                                                                 'placeholder': "Your Password"}))
+                                                                  'placeholder': "Your Password"}))
     password2 = forms.CharField(label="Confirm Password", max_length=50,
                                 widget=forms.PasswordInput(attrs={"class": "form-control",
-                                                                                 'placeholder': "Confirm Password"}))
+                                                                  'placeholder': "Confirm Password"}))
 
     def clean(self):
         cleaned_data = super().clean()
@@ -49,6 +49,7 @@ class ProfileForm(forms.ModelForm):
             'bio': forms.Textarea(attrs={'class': 'form-control'}),
             'age': forms.NumberInput(attrs={'class': 'form-cotnrol'}),
         }
+
     email = forms.EmailField(widget=forms.EmailInput(attrs={"class": "form-control"}))
     first_name = forms.CharField(max_length=50, widget=forms.TextInput(attrs={"class": "form-control"}))
     last_name = forms.CharField(max_length=50, widget=forms.TextInput(attrs={"class": "form-control"}))
@@ -66,3 +67,12 @@ class EmailLoginForm(forms.Form):
 
 class VerifyCodeForm(forms.Form):
     code = forms.IntegerField()
+
+
+class ChangePasswordForm(forms.Form):
+    password1 = forms.CharField(label="Password", max_length=50,
+                                widget=forms.PasswordInput(attrs={"class": "form-control",
+                                                                  'placeholder': "Your Password"}))
+    password2 = forms.CharField(label="Confirm Password", max_length=50,
+                                widget=forms.PasswordInput(attrs={"class": "form-control",
+                                                                  'placeholder': "Confirm Password"}))

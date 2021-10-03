@@ -12,5 +12,6 @@ urlpatterns = [
     path("verify/<str:user_email>/<int:rand_num>/", views.verify, name="verify"),
     path("follow/", views.follow, name="follow"),
     path("unfollow/", views.unfollow, name="unfollow"),
+    path("change_password/<int:user_id>/", views.change_password, name="change_password")
 
 ]

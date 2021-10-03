@@ -25,6 +25,11 @@ class Post(models.Model):
             return True
         return False
 
+    def likes(self):
+        post_likes = self.plike.all()
+        qs = post_likes.values_list("user_like_id", flat=True)
+        return qs
+
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ucomment')
@@ -47,4 +52,4 @@ class Like(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.user_like} liked {self.post_list.slug[:10]}'
+        return f'{self.user_like} liked {self.post_list.body[:10]}'

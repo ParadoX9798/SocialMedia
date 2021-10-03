@@ -5,11 +5,13 @@ from django.contrib import messages
 from django.utils.text import slugify
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect
 
 
 def all_posts(request):
     posts = Post.objects.all()
+    for i in posts:
+        print(i.plike.values("user_like"))
     return render(request, 'post/all_posts.html', {"posts": posts})
 
 
@@ -113,5 +115,4 @@ def like(request, post_id):
     like = Like(user_like=request.user, post_list=post)
     like.save()
     messages.success(request, "Liked!", 'success')
-    return redirect("post:post_detail", post.created.year, post.created.month, post.created.day, post.slug)
-
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

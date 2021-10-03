@@ -13,7 +13,6 @@ from django.http import JsonResponse
 
 def user_login(request):
     next = request.GET.get("next")
-    print(next)
     if request.method == "POST":
         form = UserLoginForm(request.POST)
         if form.is_valid():
